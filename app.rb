@@ -2,6 +2,17 @@ class App < Sinatra::Base
   register Sinatra::Namespace
   register Sinatra::JSON
 
+  post '/teste' do
+    parametros = JSON.parse(request.env['rack.input'].read)
+    #json movie
+    movie = Movie.create(parametros["movie"])
+    if movie
+      halt 201, "filme criado with json"
+    else
+      halt 404, "erro"
+    end
+  end
+
   namespace '/movies' do
     before do
       puts 'Params'
@@ -34,6 +45,11 @@ class App < Sinatra::Base
       
     post do
       @movie = Movie.create(params[:movie])
+      if params[:purchaseDate]
+        puts "Purchase date foi passado"
+      else
+        puts "Purchase date NAO foi passado"
+      end
       if @movie
         halt 201, "Movie created"
       else
